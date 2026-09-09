@@ -6,7 +6,7 @@ import PageHero from "@/components/sections/PageHero";
 import BrandSlider from "@/components/sections/BrandSlider";
 import FAQAccordion from "@/components/sections/FAQAccordion";
 import SectionDots from "@/components/sections/SectionDots";
-import { getPage, getPosts, FALLBACK_IMAGE, type HomeCollections, type MediaItem, type CardBackground } from "@/lib/api";
+import { getPage, getPosts, FALLBACK_IMAGE, type HomeCollections, type MediaItem, type CardBackground, type SectorItem } from "@/lib/api";
 import { withHighlight } from "@/lib/highlight";
 import { formatDate } from "@/lib/format";
 import { pageMetadata, SchemaScript } from "@/lib/seo";
@@ -35,6 +35,12 @@ export default async function Home() {
   const ctaStyle = sectionStyle(ctaBanner.background);
   const sectorsStyle = sectionStyle(sectors.background);
   const blogStyle = sectionStyle(blog.background);
+
+  // Más de 5 tarjetas: se acomodan en dos filas (arriba una más, si son impares)
+  // en vez de dejar que la quinta columna se corte a la mitad al envolver.
+  const sectorTopCount = Math.ceil(collections.sectors.length / 2);
+  const sectorsTop = collections.sectors.slice(0, sectorTopCount);
+  const sectorsBottom = collections.sectors.slice(sectorTopCount);
 
   return (
     <div className="bg-white">
@@ -134,23 +140,45 @@ export default async function Home() {
             {sectors.title}
           </h2>
         </div>
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10">
-          {collections.sectors.map((sector) => (
-            <div key={sector.name} className="relative h-72 group overflow-hidden clip-notch-br-sm cursor-default">
-              <Image
-                src={sector.image?.url ?? FALLBACK_IMAGE}
-                alt={sector.image?.alt ?? sector.name}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-transparent transition-colors duration-500 group-hover:from-primary" />
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <div className="w-6 h-[2px] bg-accent mb-3 transition-all duration-500 group-hover:w-10" />
-                <p className="font-title font-bold text-sm uppercase text-white tracking-widest leading-snug">{sector.name}</p>
-              </div>
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          {collections.sectors.length <= 5 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              {collections.sectors.map((sector) => (
+                <SectorCard key={sector.name} sector={sector} />
+              ))}
             </div>
-          ))}
+          ) : (
+            <>
+              {/* Móvil / tablet: se acomodan solas, sin dividir en filas */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-6">
+                {collections.sectors.map((sector) => (
+                  <SectorCard key={sector.name} sector={sector} />
+                ))}
+              </div>
+
+              {/* Escritorio: dos filas (la de abajo centrada si sobran menos) */}
+              <div className="hidden lg:block space-y-6">
+                <div
+                  className="grid gap-6"
+                  style={{ gridTemplateColumns: `repeat(${sectorsTop.length}, minmax(0, 1fr))` }}
+                >
+                  {sectorsTop.map((sector) => (
+                    <SectorCard key={sector.name} sector={sector} />
+                  ))}
+                </div>
+                <div className="flex justify-center gap-6">
+                  {sectorsBottom.map((sector) => (
+                    <div
+                      key={sector.name}
+                      style={{ width: `calc((100% - ${(sectorsTop.length - 1) * 24}px) / ${sectorsTop.length})` }}
+                    >
+                      <SectorCard sector={sector} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -206,6 +234,25 @@ export default async function Home() {
       )}
 
       <FAQAccordion title={faq.title ?? ""} titleSize={faq.title_size} faqs={collections.faqs} background={faq.background} />
+    </div>
+  );
+}
+
+function SectorCard({ sector }: { sector: SectorItem }) {
+  return (
+    <div className="relative h-72 group overflow-hidden clip-notch-br-sm cursor-default">
+      <Image
+        src={sector.image?.url ?? FALLBACK_IMAGE}
+        alt={sector.image?.alt ?? sector.name}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
+        className="object-cover transition-transform duration-700 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/30 to-transparent transition-colors duration-500 group-hover:from-primary" />
+      <div className="absolute bottom-0 left-0 right-0 p-5">
+        <div className="w-6 h-[2px] bg-accent mb-3 transition-all duration-500 group-hover:w-10" />
+        <p className="font-title font-bold text-sm uppercase text-white tracking-widest leading-snug">{sector.name}</p>
+      </div>
     </div>
   );
 }
