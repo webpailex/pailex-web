@@ -19,6 +19,12 @@
       "runtimeExecutable": "cmd",
       "runtimeArgs": ["/c", "php C:\\Users\\William\\Documents\\laragon-6.0.0\\laragon\\www\\Famaper\\artisan serve --port=8123"],
       "port": 8123
+    },
+    {
+      "name": "famaper-dev2",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": ["/c", "php C:\\Users\\William\\Documents\\laragon-6.0.0\\laragon\\www\\Famaper\\artisan serve --port=8129"],
+      "port": 8129
     }
   ]
 }

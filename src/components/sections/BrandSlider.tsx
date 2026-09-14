@@ -43,6 +43,10 @@ export default function BrandSlider({ title, titleSize, brands, background = "wh
           ))}
         </div>
       </div>
+
+      <p className="mt-8 text-center font-body text-[10px] italic text-industrial-gray/65 relative z-10">
+        Los logos son propiedad de la marca que los representa.
+      </p>
     </section>
   );
 }
