@@ -13,18 +13,6 @@
       "runtimeExecutable": "cmd",
       "runtimeArgs": ["/c", "set PHP_CLI_SERVER_WORKERS=8&& php C:\\Users\\William\\Documents\\laragon-6.0.0\\laragon\\www\\pailex-admi\\artisan serve --port=8000"],
       "port": 8000
-    },
-    {
-      "name": "famaper-dev",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "php C:\\Users\\William\\Documents\\laragon-6.0.0\\laragon\\www\\Famaper\\artisan serve --port=8123"],
-      "port": 8123
-    },
-    {
-      "name": "famaper-dev2",
-      "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "php C:\\Users\\William\\Documents\\laragon-6.0.0\\laragon\\www\\Famaper\\artisan serve --port=8129"],
-      "port": 8129
     }
   ]
 }
